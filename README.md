@@ -2,6 +2,8 @@
 
 FlareDNS is a Cloudflare DynDNS updater client to overcome flexibility limitations of existing clients
 
+**FlareDNS is currently in *beta* and being tested on some of my systems**
+
 It gets the external IP address information from [IPify](https://www.ipify.org/) and can update both A and AAAA records simultaneously.
 
 FlareDNS was built specifically for configurations where multiple servers share the same IPv4 address but have separate IPv6 addresses. You can easily run multiple FlareDNS instances to accomodate for multiple DNS updates.
