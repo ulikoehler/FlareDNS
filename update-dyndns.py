@@ -6,6 +6,7 @@ import structlog
 import logging
 import CloudFlare
 import requests
+from requests.adapters import HTTPAdapter
 
 logger = structlog.get_logger()
 
@@ -54,6 +55,23 @@ def check_and_perform_ipv6_update(cf, hostname, zone_id, current_ipv6):
     else:
         logger.debug("IPv6 record already up-to-date", ip=current_ipv6, hostname=hostname)
 
+DEFAULT_TIMEOUT = 5 # seconds
+
+class TimeoutHTTPAdapter(HTTPAdapter):
+    """Original source: https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/"""
+    def __init__(self, *args, **kwargs):
+        self.timeout = DEFAULT_TIMEOUT
+        if "timeout" in kwargs:
+            self.timeout = kwargs["timeout"]
+            del kwargs["timeout"]
+        super().__init__(*args, **kwargs)
+
+    def send(self, request, **kwargs):
+        timeout = kwargs.get("timeout")
+        if timeout is None:
+            kwargs["timeout"] = self.timeout
+        return super().send(request, **kwargs)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--email", required=True, help="The Cloudflare login email to use")
@@ -82,6 +100,11 @@ if __name__ == "__main__":
         email=args.email,
         token=args.api_key
     )
+    # Force set timeout for Cloudflare requests (so the request doesn't stall during reconnect events)
+    cf._base.network.session = requests.Session()
+    adapter = TimeoutHTTPAdapter(timeout=2.5)
+    cf._base.network.session.mount("https://", adapter)
+    cf._base.network.session.mount("http://", adapter)
     # Get zone ID. This is done only once and it's assumed to not chage
     zones = cf.zones.get(params={"name": domain})
     if len(zones) == 0:
