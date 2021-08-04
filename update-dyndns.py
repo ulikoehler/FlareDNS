@@ -25,8 +25,8 @@ def check_and_perform_ipv4_update(cf, hostname):
         old_ip = a_record["content"]
         a_record["content"] = current_ipv4
         cf.zones.dns_records.put(zone_id, a_record["id"], data=a_record)
-        logger.info(f"Updated IPv4 DNS record", old=old_ip, new=current_ipv4)
-        
+        logger.info(f"Updated IPv4 DNS record", old=old_ip, new=current_ipv4, hostname=hostname)
+
 def check_and_perform_ipv6_update(cf, hostname):
     aaaa_record = cf.zones.dns_records.get(zone_id, params={"name": hostname, "type": "AAAA"})[0]
 
@@ -44,7 +44,7 @@ def check_and_perform_ipv6_update(cf, hostname):
         old_ip = aaaa_record["content"]
         aaaa_record["content"] = current_ipv6
         cf.zones.dns_records.put(zone_id, aaaa_record["id"], data=aaaa_record)
-        logger.info(f"Updated IPv6 DNS record", old=old_ip, new=current_ipv6)
+        logger.info(f"Updated IPv6 DNS record", old=old_ip, new=current_ipv6, hostname=hostname)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
