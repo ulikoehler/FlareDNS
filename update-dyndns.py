@@ -11,14 +11,14 @@ logger = structlog.get_logger()
 
 def get_current_ipv4():
     try:
-        return requests.get("https://api4.ipify.org").text
+        return requests.get("https://api4.ipify.org", timeout=5).text
     except requests.exceptions.ConnectionError as ex:
         logger.error("Failed to find our IPv4 address", exception=str(ex))
         return None
 
 def get_current_ipv6():
     try:
-        return requests.get("https://api6.ipify.org").text
+        return requests.get("https://api6.ipify.org", timeout=5).text
     except requests.exceptions.ConnectionError as ex:
         logger.error("Failed to find our IPv6 address", exception=str(ex))
         return None
