@@ -3,12 +3,13 @@ import time
 import argparse
 import sys
 import structlog
+import logging
 import CloudFlare
 import requests
 
 logger = structlog.get_logger()
 
-def check_and_perform_ipv4_update(cf, hostname):
+def check_and_perform_ipv4_update(cf, hostname, zone_id):
     a_record = cf.zones.dns_records.get(zone_id, params={"name": hostname, "type": "A"})[0]
 
     try:
@@ -26,8 +27,10 @@ def check_and_perform_ipv4_update(cf, hostname):
         a_record["content"] = current_ipv4
         cf.zones.dns_records.put(zone_id, a_record["id"], data=a_record)
         logger.info(f"Updated IPv4 DNS record", old=old_ip, new=current_ipv4, hostname=hostname)
+    else:
+        logger.debug("IPv4 record already up-to-date", ip=current_ipv4, hostname=hostname)
 
-def check_and_perform_ipv6_update(cf, hostname):
+def check_and_perform_ipv6_update(cf, hostname, zone_id):
     aaaa_record = cf.zones.dns_records.get(zone_id, params={"name": hostname, "type": "AAAA"})[0]
 
     try:
@@ -45,6 +48,8 @@ def check_and_perform_ipv6_update(cf, hostname):
         aaaa_record["content"] = current_ipv6
         cf.zones.dns_records.put(zone_id, aaaa_record["id"], data=aaaa_record)
         logger.info(f"Updated IPv6 DNS record", old=old_ip, new=current_ipv6, hostname=hostname)
+    else:
+        logger.debug("IPv6 record already up-to-date", ip=current_ipv6, hostname=hostname)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -53,9 +58,15 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--hostname", required=True, help="The hostname to update, e.g. mydyndns.mydomain.com")
     parser.add_argument("-4", "--ipv4", action="store_true", help="Update A record with the current IPv4")
     parser.add_argument("-6", "--ipv6", action="store_true", help="Update AAAA record with the current IPv6")
+    parser.add_argument("-d", "--debug", action="store_true", help="Additional debug logging")
     parser.add_argument("-i", "--interval", type=int, default=60, help="The update interval in seconds. Set to 0 to only update once. Strictly speaking the sleep time after any update attempt")
     args = parser.parse_args()
-                        
+
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.INFO)
+
     if not args.ipv4 and not args.ipv6:
         logger.error("Please use at least one of --ipv4 and --ipv6")
         sys.exit(1)
@@ -77,9 +88,15 @@ if __name__ == "__main__":
     # Update loop
     while True:
         if args.ipv4:
-            check_and_perform_ipv4_update(cf, args.hostname)
+            try:
+                check_and_perform_ipv4_update(cf, args.hostname, zone_id)
+            except Exception as ex:
+                logger.exception(ex)
         if args.ipv6:
-            check_and_perform_ipv6_update(cf, args.hostname)
+            try:
+                check_and_perform_ipv6_update(cf, args.hostname, zone_id)
+            except Exception as ex:
+                logger.exception(ex)
         # Check for "only update once" option
         if args.interval == 0:
             break

@@ -1,0 +1,10 @@
+[Unit]
+Description=FlareDNS DyDNS update for domain dyndns.mydomain.com
+
+[Service]
+ExecStart=/usr/bin/env python3 update-dyndns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
+WorkingDirectory=/opt/FlareDNS
+Restart=unless-stopped
+
+[Install]
+WantedBy=multi-user.target
