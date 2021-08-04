@@ -34,7 +34,7 @@ pip3 install -r requirements.txt
 Tell FlareDNS to check & update DNS every 60 seconds using
 
 ```sh
-python update-dyndns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
+python3 update-dyndns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
 ```
 
 Command line help:
