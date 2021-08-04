@@ -63,8 +63,10 @@ We provide a prebuilt docker image at [Docker Hub](https://hub.docker.com/reposi
 This provides you with the ability to run FlareDNS in a consistent environment without having to install system-level dependencies like Python and the few libraries that FlareDNS requires
 
 ```
-docker run -ti --rm --name FlareDNS-dyndns.mydomain.com ulikoehler/flaredns:latest python update-dyndns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
+docker run -ti --network host --rm --name FlareDNS-dyndns.mydomain.com ulikoehler/flaredns:latest python update-dyndns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
 ```
+
+Note that `--network host` is enable IPv6 support on the container if and only if it is enabled on the host.
 
 ## How to install as a systemd service
 

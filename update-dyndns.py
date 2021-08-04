@@ -103,7 +103,7 @@ if __name__ == "__main__":
         if args.ipv6:
             try:
                 current_ipv6 = get_current_ipv6()
-                logger.debug("Current IPv6 address is", ip=current_ipv4)
+                logger.debug("Current IPv6 address is", ip=current_ipv6)
                 if current_ipv6 is not None:
                     check_and_perform_ipv6_update(cf, args.hostname, zone_id, current_ipv6)
             except Exception as ex:
