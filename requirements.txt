@@ -1,2 +1,3 @@
 cloudflare>=2.8,<=29
 structlog
+dnspython>=2.0
