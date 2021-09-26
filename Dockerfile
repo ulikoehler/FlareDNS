@@ -3,7 +3,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip --no-cache-dir install -r requirements.txt
 # Copy main script
-COPY update-dyndns.py .
+COPY flaredns.py .
 # Copy examples so they can be used directly
 COPY examples/CopyDNS.py .
 CMD ["python", "flaredns.py"]
