@@ -6,4 +6,4 @@ RUN pip --no-cache-dir install -r requirements.txt
 COPY update-dyndns.py .
 # Copy examples so they can be used directly
 COPY examples/CopyDNS.py .
-CMD ["python", "update-dyndns.py"]
+CMD ["python", "flaredns.py"]
