@@ -34,13 +34,13 @@ pip3 install -r requirements.txt
 Tell FlareDNS to check & update DNS every 60 seconds using
 
 ```sh
-python3 update-dyndns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
+python3 flaredns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
 ```
 
 Command line help:
 ```sh
-$ python update-dyndns.py --help
-usage: update-dyndns.py [-h] -e EMAIL -k API_KEY -n HOSTNAME [-4] [-6] [-d] [-i INTERVAL]
+$ python flaredns.py --help
+usage: flaredns.py [-h] -e EMAIL -k API_KEY -n HOSTNAME [-4] [-6] [-d] [-i INTERVAL]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -63,7 +63,7 @@ We provide a prebuilt docker image at [Docker Hub](https://hub.docker.com/reposi
 This provides you with the ability to run FlareDNS in a consistent environment without having to install system-level dependencies like Python and the few libraries that FlareDNS requires
 
 ```
-docker run -ti --network host --rm --name FlareDNS-dyndns.mydomain.com ulikoehler/flaredns:latest python update-dyndns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
+docker run -ti --network host --rm --name FlareDNS-dyndns.mydomain.com ulikoehler/flaredns:latest python flaredns.py --email cloudflare-email@mydomain.com --api-key c6c94fd52184dcc783c5ec1d5089ec354b9d9 --hostname dyndns.mydomain.com --ipv4 --ipv6 --interval 60
 ```
 
 Note that `--network host` is enable IPv6 support on the container if and only if it is enabled on the host.
