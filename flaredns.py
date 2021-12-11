@@ -166,8 +166,8 @@ Specify as address with length, defining how many bits to replace such as ::dead
                     if not net_prefix_length_str or not host_addr_str:
                         raise Exception(f"You need to specify --ipv6-host with prefix length such as ::dead:cafe/64, not {args.ipv6_host}")
                     host_addr = ipaddress.IPv6Address(host_addr_str)
-                    original_ipv6 = current_ipv6
-                    current_ipv6 = replace_ipv6_host_part(current_ipv6, host_addr, net_prefix_length_str)
+                    original_ipv6 = ipaddress.IPv6Address(current_ipv6)
+                    current_ipv6 = str(replace_ipv6_host_part(original_ipv6, host_addr, net_prefix_length_str))
                     logger.debug("Replacing IPv6 host part", host_addr=host_addr, net_addr=original_ipv6, prefix_size=net_prefix_length_str, result=current_ipv6)
                 if current_ipv6 is not None:
                     check_and_perform_ipv6_update(cf, args.hostname, zone_id, current_ipv6)
