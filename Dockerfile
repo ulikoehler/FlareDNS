@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.12
 WORKDIR /app
 COPY requirements.txt .
 RUN pip --no-cache-dir install -r requirements.txt
